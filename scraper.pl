@@ -1,6 +1,6 @@
 # This is a template for a Perl scraper on morph.io (https://morph.io)
 
-use LWP::Simple;
+use LWP::UserAgent;
 use HTML::TreeBuilder;
 use Database::DumpTruck;
 
@@ -11,7 +11,12 @@ use warnings;
 $| = 1;
 
 # Read in a page
-my $tb = HTML::TreeBuilder->new_from_content(get('https://example.com'));
+my $ua = LWP::UserAgent->new;
+my $response = $ua->get('https://example.com');
+die "Failed to fetch: " . $response->status_line unless $response->is_success;
+my $content = $response->decoded_content;
+
+my $tb = HTML::TreeBuilder->new_from_content($content);
 
 # Find something on the page using css selectors
 my @h1s = $tb->look_down(_tag => 'h1');
@@ -26,14 +31,12 @@ foreach my $h1 (@h1s) {
     $dt->insert([{name => $value}]);
 }
 
-# An arbitrary query against the database (only if we inserted data)
+# An arbitrary query against the database
 if (@h1s) {
     my $rows = $dt->execute("SELECT rowid AS id, name FROM data ORDER BY rowid desc LIMIT 3");
     foreach my $row (@$rows) {
         print "$row->{id}: $row->{name}\n";
     }
-} else {
-    print "No h1 tags found!\n";
 }
 
 # You don't have to do things with the HTML::TreeBuilder and Database::DumpTruck libraries.
