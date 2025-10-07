@@ -26,10 +26,14 @@ foreach my $h1 (@h1s) {
     $dt->insert([{name => $value}]);
 }
 
-# An arbitrary query against the database
-my $rows = $dt->execute("SELECT rowid AS id, name FROM data ORDER BY rowid desc LIMIT 3");
-foreach my $row (@$rows) {
-    print "$row->{id}: $row->{name}\n";
+# An arbitrary query against the database (only if we inserted data)
+if (@h1s) {
+    my $rows = $dt->execute("SELECT rowid AS id, name FROM data ORDER BY rowid desc LIMIT 3");
+    foreach my $row (@$rows) {
+        print "$row->{id}: $row->{name}\n";
+    }
+} else {
+    print "No h1 tags found!\n";
 }
 
 # You don't have to do things with the HTML::TreeBuilder and Database::DumpTruck libraries.
