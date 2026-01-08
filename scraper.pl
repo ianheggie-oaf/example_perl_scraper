@@ -10,6 +10,8 @@ use warnings;
 # Turn off output buffering
 $| = 1;
 
+print "Running perl $] on " . `uname -a`;
+
 # Read in a page
 my $ua = LWP::UserAgent->new;
 my $response = $ua->get('https://example.com');
