@@ -1,4 +1,5 @@
 # This is a template for a Perl scraper on morph.io (https://morph.io)
+# including some code snippets below that you should find helpful
 
 use LWP::UserAgent;
 use HTML::TreeBuilder;
@@ -18,6 +19,7 @@ my $response = $ua->get('https://example.com');
 die "Failed to fetch: " . $response->status_line unless $response->is_success;
 my $content = $response->decoded_content;
 
+# Parse the web page
 my $tb = HTML::TreeBuilder->new_from_content($content);
 
 # Find something on the page using css selectors
